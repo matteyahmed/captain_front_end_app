@@ -6,7 +6,7 @@ class Engines {
   String? model;
   String? serial;
   String? status;
-  Null gear;
+  int? gear;
 
   Engines(
       {this.id,

@@ -1,13 +1,13 @@
 import 'package:captain_app_2/api/models/captain_model.dart';
 import 'package:captain_app_2/api/models/engines_model.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart';
 
 import './api/api_service.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
-import './api/constants.dart';
 import 'api/models/boat_model.dart';
 
 class ChangeBoat extends StatefulWidget {
@@ -39,7 +39,7 @@ class _ChangeBoatState extends State<ChangeBoat> {
   String? isCaptainBoatType;
   String? isCaptainBoatLocation;
   String? isCaptainBoatBuiltDate;
-  List<Engines>? isCaptainBoatEngines;
+  // List<Engines>? isCaptainBoatEngines;
   //
   bool isBoat = false;
   int? boatId;
@@ -69,16 +69,18 @@ class _ChangeBoatState extends State<ChangeBoat> {
     if (response.statusCode == 200) {
       setState(() {
         profileData = jsonDecode(response.body);
-        print(profileData);
+        print("This is from Change Boat: ${response.body}");
 
         Captain captain = Captain.fromJson(profileData!['captain']);
+            print("Thi is FROM CHANGE BOAT PAGE:  $isBoat");
+        
         isCaptainFirstName = captain.firstName;
         isCaptainLastName = captain.lastName;
         isCaptainBoat = captain.boat!.name;
         isCaptainBoatSerial = captain.boat!.serial;
         isCaptainBoatType = captain.boat!.type;
         isCaptainBoatLocation = captain.boat!.location;
-        isCaptainBoatEngines = captain.boat?.engines;
+        // isCaptainBoatEngines = captain.boat?.engines;
         isCaptainBoatBuiltDate = captain.boat?.built_date;
         // if (captain.boat != null && captain.boat!.engines != null) {
         //   isCaptainBoatEngines = captain.boat!.engines;
@@ -88,6 +90,7 @@ class _ChangeBoatState extends State<ChangeBoat> {
         // }
         //
         isBoat = captain.boat != null;
+        // isBoat = captain.boat != null;
         boatId = captain.boat?.id;
 
         // Map<String, dynamic>? boatData = profileData!['boat'];
@@ -117,23 +120,23 @@ class _ChangeBoatState extends State<ChangeBoat> {
   }
 
   isHasBoat(BuildContext context) {
-    print(isCaptainBoatEngines);
+    // print(isCaptainBoatEngines);
     // for(engine in isCaptainBoat)
-    var sizedBox = SizedBox(
-      height: 20,
-    );
+
+    var sizedBox = SizedBox(height: 20);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        sizedBox,
         Icon(
-          Icons.sailing_outlined,
+          Icons.directions_boat,
           size: 65,
         ),
         Text(
           isCaptainBoat!,
-          style: Theme.of(context).textTheme.headlineLarge,
+          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 30),
         ),
-        sizedBox,
+        sizedBox = SizedBox(height: 80),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 100),
           child: Table(
@@ -218,75 +221,43 @@ class _ChangeBoatState extends State<ChangeBoat> {
             ],
           ),
         ),
-        // SingleChildScrollView(
-        //   scrollDirection: Axis.horizontal,
-        //   child: Padding(
-        //     padding: const EdgeInsets.symmetric(horizontal: 20),
-        //     child: DataTable(
-        //       // datatable widget
-        //       columns: [
-        //         // column to set the name
-        //         DataColumn(
-        //           label: Text('Serial'),
-        //         ),
-        //         DataColumn(
-        //           label: Text('Type'),
-        //         ),
-        //         DataColumn(
-        //           label: Text('Location'),
-        //         ),
-        //         DataColumn(
-        //           label: Text('built Date'),
-        //         ),
-        //       ],
-
-        //       rows: [
-        //         // row to set the values
-        //         DataRow(cells: [
-        //           DataCell(Text(isCaptainBoatSerial!)),
-        //           DataCell(Text(isCaptainBoatType!)),
-        //           DataCell(Text(isCaptainBoatLocation!)),
-        //           DataCell(Text(isCaptainBoatBuiltDate!)),
-        //         ]),
-        //       ],
-        //     ),
-        //   ),
         // ),
         sizedBox,
         // sizedBox()
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.person_outlined,
-                  size: 65,
-                ),
-                Text(
-                  '${isCaptainFirstName!} ${isCaptainLastName!}',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                Switch(
-                  value: isBoat,
-                  activeColor: Colors.blue,
-                  onChanged: (newValue) {
-                    // This is called when the user toggles the switch.
-                    setState(() {
-                      isBoat = newValue;
-                    });
+         SizedBox(height: 60),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Icon(
+                Icons.account_circle,
+                size: 50,
+              ),
+              Text(
+                '${isCaptainFirstName!} ${isCaptainLastName!}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Switch(
+                value: isBoat,
+                activeColor: Colors.blue,
+                onChanged: (newValue) {
+                  // This is called when the user toggles the switch.
+                  setState(() {
+                    isBoat = newValue;
+                  });
 
-                    _apiService.OnOffCaptain(boatId, isBoat, widget.token);
-                  },
+                  _apiService.OnOffCaptain(boatId, isBoat, widget.token);
+                  Navigator.pop(context);
+
+                },
+              ),
+              Text(
+                'Leave Boat',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  'Leave Boat',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         ),
 
@@ -302,7 +273,18 @@ class _ChangeBoatState extends State<ChangeBoat> {
           future: _apiService.selectBoats(widget.token),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return SafeArea(
+                child: Column(
+                  children: [
+                    SizedBox(height: 100,),
+                    Center(child: Container(
+                      child: CircularProgressIndicator(
+                        color: Colors.pink,
+                          
+                      ))),
+                  ],
+                ),
+              );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
@@ -327,7 +309,7 @@ class _ChangeBoatState extends State<ChangeBoat> {
                               _apiService.OnOffCaptain(
                                   boatId, newValue, widget.token);
                               FocusScope.of(context).unfocus();
-
+      Navigator.pop(context);
                               print(
                                   'Boat Name: ${boat.name}, Boat ID: $boatId');
                             },

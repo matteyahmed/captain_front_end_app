@@ -4,15 +4,13 @@ class FormCards extends StatelessWidget {
   final IconData formIcon;
   final String formCardName;
   final String cardUrl;
-  final String apiUrl;
-  final String token;
+
 
   const FormCards({
     required this.formIcon,
     required this.formCardName,
     required this.cardUrl,
-    required this.apiUrl,
-    required this.token,
+
     super.key,
   });
 
@@ -53,10 +51,7 @@ class FormCards extends StatelessWidget {
           ),
           onTap: () {
             Navigator.of(context, rootNavigator: true)
-                .pushNamed(cardUrl, arguments: {
-              'apiUrl': apiUrl,
-              'token': token,
-            });
+                .pushNamed(cardUrl, );
           },
         ),
       ),

@@ -1,5 +1,7 @@
-import 'package:captain_app_2/changeboat1.dart';
+
+import 'package:captain_app_2/api/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../profile_screen.dart';
 
@@ -9,13 +11,19 @@ class SideNav extends StatefulWidget {
   final String apiUrl;
   final String token;
 
-  const SideNav({required this.apiUrl, required this.token, super.key});
+
+  const SideNav({
+    required this.apiUrl, 
+    required this.token,
+
+    super.key});
 
   @override
   State<SideNav> createState() => _SideNavState();
 }
 
 class _SideNavState extends State<SideNav> {
+  ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -37,45 +45,60 @@ class _SideNavState extends State<SideNav> {
               ),
             ),
           ),
-          sideLinks(context, 'Boat', '/changeboat'),
-          sideLinks(context, 'Trip Sheet', '/tripSheet'),
-
-          // const Divider(),
-          Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-            child: const ExpansionTile(
-              leading: Icon(Icons.percent),
-              title: Text('ExpansionTile 3'),
-              children: <Widget>[
-                Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'This is tile number 3',
-                        ),
-                      ],
-                    )),
-              ],
+          sideLinks(context, 'Boat', '/changeboat',Icons.sailing ),
+          sideLinks(context, 'Leave Request', '/leaveRequestForm', Icons.beach_access),
+                 ListTile(
+            leading: const Icon(Icons.logout, ),
+            title: Text(
+              'Logout',
+              style: TextStyle(fontSize: 12, ),
             ),
+            onTap: () async {
+              // await _apiServices.logoutUser(context);
+              // SystemNavigator.pop();
+              Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      "Log Out ?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    content: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[900],
+                          foregroundColor: Colors.white),
+                      onPressed: () async {
+                        await _apiService.logoutUser(context);
+                        SystemNavigator.pop();
+                      },
+                      child: Text("Yes"),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  ListTile sideLinks(BuildContext context, String title, String route) {
-    return ListTile(
-      leading: const Icon(Icons.person, color: Colors.black),
-      title: Text(
-        title,
-        style: TextStyle(fontSize: 12, color: Colors.black),
-      ),
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(route,
-            arguments: {'apiUrl': widget.apiUrl, 'token': widget.token});
-      },
-    );
-  }
+ListTile sideLinks(BuildContext context, String title, String route, IconData iconData) {
+  return ListTile(
+    leading: Icon(iconData), // Use the iconData parameter to create the Icon
+    title: Text(
+      title,
+      style: TextStyle(fontSize: 12, color: Colors.black),
+    ),
+    onTap: () {
+      Navigator.pop(context);
+      Navigator.of(context, rootNavigator: true).pushNamed(route,
+          arguments: {'apiUrl': widget.apiUrl, 'token': widget.token});
+    },
+  );
+}
+
 }

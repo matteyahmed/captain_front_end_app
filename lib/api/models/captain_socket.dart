@@ -1,6 +1,23 @@
-import 'boat_model.dart';
+class SocketCaptain {
+  CaptainSocket? captain;
 
-class Captain {
+  SocketCaptain({this.captain});
+
+  SocketCaptain.fromJson(Map<String, dynamic> json) {
+    captain =
+        json['captain'] != null ? new CaptainSocket.fromJson(json['captain']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.captain != null) {
+      data['captain'] = this.captain!.toJson();
+    }
+    return data;
+  }
+}
+
+class CaptainSocket {
   int? id;
   String? firstName;
   String? lastName;
@@ -8,9 +25,9 @@ class Captain {
   String? dateOfBirth;
   String? joinedDate;
   String? terminated;
-  Boat? boat;
+  String? boat;
 
-  Captain(
+  CaptainSocket(
       {this.id,
       this.firstName,
       this.lastName,
@@ -20,7 +37,7 @@ class Captain {
       this.terminated,
       this.boat});
 
-  Captain.fromJson(Map<String, dynamic> json) {
+  CaptainSocket.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['first_name'];
     lastName = json['last_name'];
@@ -28,7 +45,7 @@ class Captain {
     dateOfBirth = json['date_of_birth'];
     joinedDate = json['joined_date'];
     terminated = json['terminated'];
-    boat = json['boat'] != null ? new Boat.fromJson(json['boat']) : null;
+    boat = json['boat'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,7 +57,7 @@ class Captain {
     data['date_of_birth'] = this.dateOfBirth;
     data['joined_date'] = this.joinedDate;
     data['terminated'] = this.terminated;
-    if (this.boat != null) {data['boat'] = this.boat?.toJson();}
+    data['boat'] = this.boat;
     return data;
   }
 }

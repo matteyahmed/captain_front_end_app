@@ -1,3 +1,11 @@
+import 'package:captain_app_2/FuelSheetForm.dart';
+import 'package:captain_app_2/itemRequest_form.dart';
+import 'package:captain_app_2/checklist_form.dart';
+import 'package:captain_app_2/fuelSheetScreen.dart';
+import 'package:captain_app_2/itemRequest_screen.dart';
+import 'package:captain_app_2/leaverequest_form.dart';
+import 'package:captain_app_2/providers/token_provider.dart';
+import 'package:captain_app_2/providers/userprovider.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
@@ -5,10 +13,24 @@ import './profile_screen.dart';
 import './tripsheet_screen.dart';
 import './tripsheet_form.dart';
 import './changeboat.dart';
+import './check_list.dart';
+import './lottie.dart';
+
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers:  [
+         ChangeNotifierProvider(create: (context) => TokenProvider()),
+         ChangeNotifierProvider(create: (context) => UserSocketProvider(context)),
+
+      ],
+      child: const MyApp(),
+    )
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,9 +42,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: ('Arriva'),
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.blueGrey[99],
-        // scaffoldBackgroundColor: Colors.blueGrey[99],
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        scaffoldBackgroundColor: Colors.orange[99],
+
         useMaterial3: true,
       ),
       initialRoute: '/',
@@ -58,7 +79,26 @@ class MyApp extends StatelessWidget {
               .settings
               .arguments as Map<String, dynamic>?;
 
-          return TripSheetForm(
+          return TripSheetForm();
+        },
+        '/checkList': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+
+          return CheckListScreen(
+            apiUrl: args?['apiUrl'] as String? ??
+                '', // Provide a default value if null
+            token: args?['token'] as String? ??
+                '', // Provide a default value if null
+          );
+        },
+        '/checkListForm': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+
+          return CheckListForm(
             apiUrl: args?['apiUrl'] as String? ??
                 '', // Provide a default value if null
             token: args?['token'] as String? ??
@@ -76,6 +116,60 @@ class MyApp extends StatelessWidget {
             token: args?['token'] as String? ??
                 '', // Provide a default value if null
           );
+        },
+        '/fuelSheetScreen': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+
+          return FuelSheetScreen(
+            apiUrl: args?['apiUrl'] as String? ??
+                '', // Provide a default value if null
+            token: args?['token'] as String? ??
+                '', // Provide a default value if null
+          );
+        },
+        '/itemRequestScreen': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+
+          return ItemRequestScreen(
+            apiUrl: args?['apiUrl'] as String? ??
+                '', // Provide a default value if null
+            token: args?['token'] as String? ??
+                '', // Provide a default value if null
+          );
+        },
+        '/itemRequestForm': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+
+          return ItemRequestForm(
+            apiUrl: args?['apiUrl'] as String? ??
+                '', // Provide a default value if null
+            token: args?['token'] as String? ??
+                '', // Provide a default value if null
+          );
+        },
+        '/leaveRequestForm': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+
+          return LeaveRequstForm(
+            apiUrl: args?['apiUrl'] as String? ??
+                '', // Provide a default value if null
+            token: args?['token'] as String? ??
+                '', // Provide a default value if null
+          );
+        },
+        '/lottie': (context) {
+          final Map<String, dynamic>? args = ModalRoute.of(context)!
+              .settings
+              .arguments as Map<String, dynamic>?;
+          return LottieAnim();
         },
       },
     );

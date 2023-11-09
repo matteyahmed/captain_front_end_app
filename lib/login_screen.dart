@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import './api/constants.dart';
 
 import 'api/api_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,10 +14,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+   final secureStorage = FlutterSecureStorage();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
   ApiService _apiService = ApiService();
+  
 
   void _loginUser() async {
     String username = _usernameController.text;
@@ -47,7 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-
+    await secureStorage.write(key: 'username', value: username);
+    await secureStorage.write(key: 'password', value: password);
     var login = await _apiService.loginUser(username, password);
 
     if (login != null) {
@@ -109,7 +113,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     // Call the API service to login the user
   }
+  @override
+  void initState() {
+    super.initState();
 
+    // Check if there are saved credentials and autofill the input fields
+    secureStorage.read(key: 'username').then((value) {
+      if (value != null) {
+        _usernameController.text = value;
+      }
+    });
+
+    secureStorage.read(key: 'password').then((value) {
+      if (value != null) {
+        _passwordController.text = value;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,12 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: ListView(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 0.0), // Adjust the top padding value as needed
-              child: Image.asset(
-                "images/arriva_logo.png",
-                height: 100,
-              ),
+              padding: const EdgeInsets.only(top: 0.0), // Adjust the top padding value as needed
+              child: Image.asset("images/arriva_logo.png",height: 100,),
             ),
             const Icon(
               Icons.person,
@@ -172,11 +188,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white,
                   ),
                 )),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             Text(
-              'Welcome to Arriva Captain\'s App V-0.1',
+              'Welcome to Arriva Captain\'s App V-0.4',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.blue[900],

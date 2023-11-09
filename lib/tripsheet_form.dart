@@ -1,7 +1,8 @@
+import 'package:captain_app_2/api/constants.dart';
+import 'package:captain_app_2/api/token_share.dart';
 import 'package:flutter/material.dart';
 import 'api/api_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/retry.dart';
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
@@ -11,9 +12,7 @@ import 'api/models/captain_model.dart';
 import 'components/drop_down.dart';
 
 class TripSheetForm extends StatefulWidget {
-  final String apiUrl;
-  final String token;
-  const TripSheetForm({required this.apiUrl, required this.token, super.key});
+  const TripSheetForm({super.key});
   @override
   _TripSheetFormState createState() => _TripSheetFormState();
 }
@@ -22,6 +21,8 @@ class _TripSheetFormState extends State<TripSheetForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ApiService _apiService = ApiService();
   Map<String, dynamic>? profileData;
+  bool _isPressed = false;
+  // List<dynamic>? profileData;
   bool isLoading = false;
   String? captainName;
   String? captainBoat;
@@ -51,7 +52,8 @@ class _TripSheetFormState extends State<TripSheetForm> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Call the fetchData method when the widget is initialized
+    // fetchData(); // Call the fetchData method when the widget is initialized
+    fetchData();
   }
 
   Future<void> fetchData() async {
@@ -59,15 +61,14 @@ class _TripSheetFormState extends State<TripSheetForm> {
       isLoading = true;
     });
 
-    String? token = widget.token;
-
+    String? token = await TokenService.getToken();
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Token $token',
     };
 
     http.Response response = await http.get(
-      Uri.parse(widget.apiUrl),
+      Uri.parse(ApiConstants.baseUrl + ApiConstants.userProfileEndpoint),
       headers: headers,
     );
 
@@ -79,7 +80,7 @@ class _TripSheetFormState extends State<TripSheetForm> {
         Captain captain = Captain.fromJson(profileData!['captain']);
         captainName = captain.name;
         captainBoat = captain.boat?.name;
-        // print('The Captain Name is: $captainName');
+        print('The Captain Name is: $captainName');
       });
     } else {
       setState(() {
@@ -138,6 +139,10 @@ class _TripSheetFormState extends State<TripSheetForm> {
       final int tripEndUsedPetrol =
           int.tryParse(_endPetrolController.text) ?? 0;
 
+      setState(() {
+        _isPressed = true;
+      });
+      String? token = await TokenService.getToken();
       // Form is valid, proceed with form submission logic
       var submitTripSheet = await _apiService.submitTripSheet(
         _fromValue,
@@ -148,7 +153,6 @@ class _TripSheetFormState extends State<TripSheetForm> {
         tripEndTime,
         tripStartUsedPetrol,
         tripEndUsedPetrol,
-        widget.token,
       );
       // print(_formKey.currentState!);
       FocusScope.of(context).unfocus();
@@ -161,7 +165,9 @@ class _TripSheetFormState extends State<TripSheetForm> {
 
       await Future.delayed(Duration(seconds: 2));
 
-      Navigator.pop(context);
+      Navigator.of(context).popUntil((route) {
+        return route.settings.name == '/profile';
+      });
     }
   }
 
@@ -182,7 +188,7 @@ class _TripSheetFormState extends State<TripSheetForm> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 30.0),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -223,7 +229,30 @@ class _TripSheetFormState extends State<TripSheetForm> {
                 ],
               ),
             ),
-            MyTripSheetForm(),
+            // SingleChildScrollView(
+            //   child: MyTripSheetForm(),
+            // ),
+            SingleChildScrollView(
+              child: captainName != null
+                  ? MyTripSheetForm()
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          size: 200,
+                        ),
+                        Text(
+                          'No boat Assaigned',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+            ),
           ],
         ),
       ),
@@ -250,7 +279,7 @@ class _TripSheetFormState extends State<TripSheetForm> {
               _toValue = newValue;
             });
           }),
-          SizedBox(height: 15),
+          SizedBox(height: 30),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Row(
@@ -346,7 +375,7 @@ class _TripSheetFormState extends State<TripSheetForm> {
                       backgroundColor: Colors.grey[900],
                       foregroundColor: Colors.white),
                   onPressed: () {
-                    _submitForm();
+                    _isPressed == false ? _submitForm() : null;
                   },
                   child: Text('Submit'),
                 ),

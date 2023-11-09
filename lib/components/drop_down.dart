@@ -15,11 +15,23 @@ class _TripSheetDropDownState extends State<TripSheetDropDown> {
 
   final List<String> locations = [
     "Airport",
+    "Alimatha",
+    "Cross Roads",
+    "Dhihgirri",
     "Dhon Velli",
+    "Ellaidhoo",
+    "Felidhoo",
+    "Fulidhoo",
+    "Hard Rock",
     "Jumeira",
     "Kuda Hura",
+    "Kunavashi",
     "Male'",
-    "Velifushi'",
+    "Patina Maldives",
+    "Ship wreck",
+    "Thinadhoo",
+    "Landaa Giraavaru",
+    "Varru",
   ];
 
   @override
