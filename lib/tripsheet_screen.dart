@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+
 import 'package:captain_app_2/api/constants.dart';
 import 'package:captain_app_2/api/token_share.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,10 @@ import 'package:intl/intl.dart';
 
 import 'api/api_service.dart';
 import 'api/models/trip_sheet_model.dart';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'components/nav_anim_builder.dart';
 
@@ -31,10 +36,11 @@ class TripSheetScreen extends StatefulWidget {
 }
 
 class _TripSheetScreenState extends State<TripSheetScreen> {
-
   ApiService _apiService = ApiService();
   List<dynamic>? profileData;
-
+  final _firebaseMessaging = FirebaseMessaging.instance;
+// final userID =   FirebaseAuth.instance.currentUser!.uid;
+final user = FirebaseAuth.instance.currentUser;
   bool isLoading = false;
   String? captainName = '';
   String? captainFirstName = '';
@@ -42,10 +48,25 @@ class _TripSheetScreenState extends State<TripSheetScreen> {
   String? captainLastName = '';
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
-    fetchData();
+     fetchData();
+getFCM();
+    
+  
   }
+
+  Future<void> getFCM() async {
+    final FCMToken = await _firebaseMessaging.getToken();
+       if (user != null) {
+  String uid = user!.uid;
+  print('User ID: $uid');
+} else {
+  print('No user signed in');
+}
+    print("Fire base Token: ${FCMToken}");
+  }
+
   String capitalize(String text) {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1).toLowerCase();
@@ -56,14 +77,12 @@ class _TripSheetScreenState extends State<TripSheetScreen> {
     await fetchData();
   }
 
-
-
   Future<void> fetchData() async {
     setState(() {
       isLoading = true;
     });
     // String? token = widget.token;
-     String? token = await TokenService.getToken();
+    String? token = await TokenService.getToken();
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -115,8 +134,17 @@ class _TripSheetScreenState extends State<TripSheetScreen> {
           dataRows.add(
             DataRow(
               cells: <DataCell>[
-                DataCell(Text(dataEntry['boat_name'].toString(),
-                    style: TextStyle(fontSize: 10))),
+                DataCell(TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return detailPage(dataEntry);
+                        });
+                  },
+                  child: Text(dataEntry['boat_name'].toString(),
+                      style: TextStyle(fontSize: 10, color: Colors.deepOrangeAccent.shade400)),
+                )),
                 DataCell(Text(dataEntry['trip_from'].toString(),
                     style: TextStyle(fontSize: 10))),
                 DataCell(Text(dataEntry['trip_to'].toString(),
@@ -173,7 +201,9 @@ class _TripSheetScreenState extends State<TripSheetScreen> {
                 Center(
                   child: Text('RECENT'),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Expanded(
                   child: ListView(
                     children: [
@@ -214,15 +244,112 @@ class _TripSheetScreenState extends State<TripSheetScreen> {
           ),
           backgroundColor: Colors.black,
           onPressed: () => {
-            // Navigator.of(context, rootNavigator: true).pushNamed(
-            //     '/tripSheetForm',
-            //     arguments: {'apiUrl': widget.apiUrl, 'token': widget.token})
-            Navigator.push(
-                context,
-                SlidePageRoute(
-                    page: TripSheetForm(),
-                    context: context)),
+            Navigator.push(context,
+                SlidePageRoute(page: TripSheetForm(), context: context)),
           },
+        ),
+      ),
+    );
+  }
+
+  AlertDialog detailPage(dataEntry) {
+    return AlertDialog(
+      insetPadding: EdgeInsets.symmetric(horizontal: 30,),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+           Text(dataEntry['boat_name'].toString(),
+                style: TextStyle(fontSize: 20,)),
+                     Text(
+              DateFormat('MMM-dd-yy')
+                  .format(DateTime.parse(dataEntry['trip_date'])),
+              style: TextStyle(fontSize: 15),
+            ),
+      ]),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+         
+            SizedBox(
+              height: 5,
+            ),
+         
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Trip From',
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text(dataEntry['trip_from'].toString(),
+                    style: TextStyle(fontSize: 10))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Trip To',
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text(dataEntry['trip_to'].toString(),
+                    style: TextStyle(fontSize: 10))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Petrol Fill',
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text("${dataEntry['petrol_fill_in_today']} liters",
+                    style: TextStyle(fontSize: 10))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Number Of Guests',
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text("${dataEntry['number_of_guests']}",
+                    style: TextStyle(fontSize: 10))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Trip Start Time',
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text("${dataEntry['trip_start_time']}",
+                    style: TextStyle(fontSize: 10))
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Trip End Time',
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text("${dataEntry['trip_end_time']}",
+                    style: TextStyle(fontSize: 10))
+              ],
+            ),
+          ],
         ),
       ),
     );

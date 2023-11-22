@@ -247,11 +247,11 @@ class ProfileCards extends StatelessWidget {
           boxShadow: const [
             BoxShadow(
               color: Colors.blueGrey,
-              blurRadius: 15.0, // soften the shadow
-              spreadRadius: 5.0, //extend the shadow
+              blurRadius: 20.0, // soften the shadow
+              spreadRadius: 1.5, //extend the shadow
               offset: Offset(
-                5.0, // Move to right 5  horizontally
-                5.0, // Move to bottom 5 Vertically
+                0.0, // Move to right 5  horizontally
+                0.0, // Move to bottom 5 Vertically
               ),
             )
           ],

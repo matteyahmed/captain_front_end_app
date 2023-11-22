@@ -1,11 +1,12 @@
 class ApiConstants {
-  static String baseUrl = 'http://10.0.2.2:8000/api';
+  // static String baseUrl = 'http://10.0.2.2:8000/api';
   // static String baseUrl = 'http://127.0.0.1:8000/api';
-  // static String baseUrl = 'https://arrivaapp6-production.up.railway.app/api';
+  static String baseUrl = 'https://arrivaapp6-production.up.railway.app/api';
   // static String baseUrl = 'https://arrivaapp005-production.up.railway.app/api';
   //
   static String loginUserEndpoint = '/login/';
   static String logOutUserEndpoint = '/logout/';
+  static String getFcm = '/getfcm/';
   //
   static String userProfileEndpoint = '/profile/';
   static String onOffCaptain = '/assign-captain/';
@@ -34,9 +35,9 @@ class ApiConstants {
 }
 
 class SocketConstants {
-  // static String baseSocket = "wss://arrivaapp6-production.up.railway.app/ws";
+  static String baseSocket = "wss://arrivaapp6-production.up.railway.app/ws";
   // static String baseSocket = "wss://arrivaapp005-production.up.railway.app/ws";
-  static String baseSocket = "ws://10.0.2.2:8000/ws";
+  // static String baseSocket = "ws://10.0.2.2:8000/ws";
   static String socketCaptain = '/captain/?token=';
   static String socketTripSheet = '/tripsheet/?token=';
 }

@@ -52,7 +52,7 @@ class CheckList {
   String? engine3Condition;
 
   String? engine4Remarks;
-  // String? engine4Condition;
+  String? engine4Condition;
   // dynamic engine1;
   // dynamic engine2;
   // dynamic engine3;
@@ -104,8 +104,8 @@ class CheckList {
     this.engine3Remarks,
     this.engine3Condition,
 
-    // this.engine4Condition,
-    // this.engine4Remarks,
+    this.engine4Condition,
+    this.engine4Remarks,
     // this.engine1,
     // this.engine2,
     // this.engine3,
@@ -156,8 +156,8 @@ class CheckList {
         engine3Remarks: json["engine_3_remarks"],
         engine3Condition: json["engine_3_condition"],
 
-        // engine4Remarks: json["engine_4_remarks"],
-        // engine4Condition: json["engine_4_condition"],
+        engine4Remarks: json["engine_4_remarks"],
+        engine4Condition: json["engine_4_condition"],
         // engine1: json["engine_1"],
         // engine2: json["engine_2"],
         // engine3: json["engine_3"],
@@ -206,8 +206,8 @@ class CheckList {
         "engine_3_remarks": engine3Remarks,
         "engine_3_condition": engine3Condition,
 
-        // "engine_4_condition": engine4Condition,
-        // "engine_4_remarks": engine4Remarks,
+        "engine_4_condition": engine4Condition,
+        "engine_4_remarks": engine4Remarks,
         // "engine_1": engine1,
         // "engine_2": engine2,
         // "engine_3": engine3,

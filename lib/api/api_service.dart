@@ -53,10 +53,40 @@ class ApiService {
       }
     } catch (e) {
       log(e.toString());
-      print(e.toString());
+      print("hello ${e.toString()}");
     }
     return null; // Return Null if the Login Request Fails
   }
+
+
+  Future<String?> sendFCMtoken(String? FCMToken,) async {
+    try {
+      final url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getFcm);
+      var body = jsonEncode({"fcm_token": FCMToken,});
+      String? token = await TokenService.getToken();
+      var response = await http.post(
+        url,
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token $token',
+        },
+      );
+
+      print('FCM TOKEN RESPONSE: ${response.body}');
+
+      if (response.statusCode == 201) {
+        var responseData = jsonDecode(response.body);
+        return responseData['fcm_token'];
+      } else {
+        print("Failed to submit trip sheet");
+        throw Exception("Failed to submit FCM TOKEN");
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
 
   Future<String?> logoutUser(context) async {
     try {
@@ -127,8 +157,7 @@ class ApiService {
       String? token = await TokenService.getToken();
       String tokenKey = token!.substring(0, 8);
 
-      final channel = IOWebSocketChannel.connect(
-        Uri.parse(
+      final channel = IOWebSocketChannel.connect(Uri.parse(
           SocketConstants.baseSocket +
               SocketConstants.socketCaptain +
               tokenKey));
@@ -165,39 +194,40 @@ class ApiService {
     }
   }
 
-Future<String?> updateItemRequest(int ids, String received) async {
-  try {
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.itemUpdateReqeust);
-    var body = jsonEncode({
-      "id": ids,
-      "received": received,
-    });
+  Future<String?> updateItemRequest(int ids, String received) async {
+    try {
+      var url =
+          Uri.parse(ApiConstants.baseUrl + ApiConstants.itemUpdateReqeust);
+      var body = jsonEncode({
+        "id": ids,
+        "received": received,
+      });
 
-    String? token = await TokenService.getToken();
-    var response = await http.post(
-      url,
-      body: body,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token $token',
-      },
-    );
+      String? token = await TokenService.getToken();
+      var response = await http.post(
+        url,
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token $token',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      var responseData = jsonDecode(response.body);
-      print('this is from the backend: $responseData');
-      return responseData['message']; // Return success message
-    } else {
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-      print("Failed to Update ItemRequest");
-      return "Failed to Update ItemRequest"; // Return error message
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        print('this is from the backend: $responseData');
+        return responseData['message']; // Return success message
+      } else {
+        print('Response Status Code: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+        print("Failed to Update ItemRequest");
+        return "Failed to Update ItemRequest"; // Return error message
+      }
+    } catch (e) {
+      print('Network Error: $e');
+      return "Network Error: $e"; // Return network error message
     }
-  } catch (e) {
-    print('Network Error: $e');
-    return "Network Error: $e"; // Return network error message
   }
-}
   // Future<String?> updateItemRequest(int ids, String received) async {
   //   try {
   //     var url =

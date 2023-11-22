@@ -19,6 +19,19 @@ class TripSheetForm extends StatefulWidget {
 
 class _TripSheetFormState extends State<TripSheetForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const List<String> _fruitOptions = <String>[ 
+    'apple', 
+    'banana', 
+    'orange', 
+    'mango', 
+    'grapes', 
+    'watermelon', 
+    'kiwi', 
+    'strawberry', 
+    'sugarcane', 
+  ]; 
+  
+
   ApiService _apiService = ApiService();
   Map<String, dynamic>? profileData;
   bool _isPressed = false;
@@ -395,6 +408,8 @@ class _TripSheetFormState extends State<TripSheetForm> {
     }
     return null;
   }
+
+
 
   TextFormField numberInputField(
       String name, TextEditingController controller) {

@@ -1,4 +1,5 @@
 import 'package:captain_app_2/FuelSheetForm.dart';
+import 'package:captain_app_2/firebase_api.dart';
 import 'package:captain_app_2/itemRequest_form.dart';
 import 'package:captain_app_2/checklist_form.dart';
 import 'package:captain_app_2/fuelSheetScreen.dart';
@@ -17,17 +18,23 @@ import './check_list.dart';
 import './lottie.dart';
 
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase
+  await FirebaseApi().initNotifications();
+  
+
   runApp(
     MultiProvider(
-      providers:  [
-         ChangeNotifierProvider(create: (context) => TokenProvider()),
-         ChangeNotifierProvider(create: (context) => UserSocketProvider(context)),
-
+      providers: [
+        ChangeNotifierProvider(create: (context) => TokenProvider()),
+        ChangeNotifierProvider(create: (context) => UserSocketProvider(context)),
       ],
       child: const MyApp(),
-    )
+    ),
   );
 }
 

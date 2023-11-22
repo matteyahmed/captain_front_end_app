@@ -17,20 +17,27 @@ class _TripSheetDropDownState extends State<TripSheetDropDown> {
     "Airport",
     "Alimatha",
     "Cross Roads",
+    "Club med kani",
     "Dhihgirri",
     "Dhon Velli",
     "Ellaidhoo",
     "Felidhoo",
     "Fulidhoo",
+    "Gili lankanfushi",
     "Hard Rock",
     "Jumeira",
     "Kuda Hura",
+    "Kurumba"
     "Kunavashi",
     "Male'",
+    "O Blue",
+    "Paradise"
     "Patina Maldives",
     "Ship wreck",
     "Thinadhoo",
     "Landaa Giraavaru",
+    "W Maldives",
+    "Vadhoo",
     "Varru",
   ];
 

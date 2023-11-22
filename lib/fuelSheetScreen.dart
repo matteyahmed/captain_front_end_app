@@ -2,6 +2,7 @@ import 'package:captain_app_2/FuelSheetForm.dart';
 import 'package:captain_app_2/api/constants.dart';
 import 'package:captain_app_2/api/token_share.dart';
 import 'package:captain_app_2/components/nav_anim_builder.dart';
+import 'package:captain_app_2/itemRequest_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -108,37 +109,42 @@ class _FuelSheetScreenState extends State<FuelSheetScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Card(
                   elevation: 1,
-                  child: ListTile(
-                    leading: Icon(Icons.fact_check_outlined),
-                    title: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
+                  child: GestureDetector(
+                    onTap: () {
+                      _showDetailsDialog(
+                          captainName, captainBoat, noteNumber,liters, formattedDate);
+                    },
+                    child: ListTile(
+                      leading: Icon(Icons.fact_check_outlined),
+                      title: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(captainBoat, textAlign: TextAlign.start),
+                                Text('Captain: ${captainName.toUpperCase()}',
+                                    style: TextStyle(fontSize: 10)),
+                              ]),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('$captainBoat', textAlign: TextAlign.start),
-                              Text('Captain: ${captainName.toUpperCase()}',
-                                  style: TextStyle(fontSize: 10)),
-                            ]),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .start, // Add this line to align the text to the left
-                              children: [
-                                Text('Note Number: ${noteNumber}',
-                                    style: TextStyle(fontSize: 10)),
-                                Text('Liters: $liters',
-                                    style: TextStyle(fontSize: 10)),
-                                Text('Date: $formattedDate',
-                                    style: TextStyle(fontSize: 10)),
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .start, // Add this line to align the text to the left
+                                children: [
+                                  Text('Note Number: ${noteNumber}',
+                                      style: TextStyle(fontSize: 10)),
+                                  Text('Liters: $liters',
+                                      style: TextStyle(fontSize: 10)),
+                                  Text('Date: $formattedDate', style: TextStyle(fontSize: 10)),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -159,14 +165,63 @@ class _FuelSheetScreenState extends State<FuelSheetScreen> {
             // Navigator.of(context, rootNavigator: true).pushNamed(
             //     '/tripSheetForm',
             //     arguments: {'apiUrl': widget.apiUrl, 'token': widget.token})
-            Navigator.push(
-                context,
-                SlidePageRoute(
-                    page: fuelSheetForm(),
-                    context: context)),
+            Navigator.push(context,
+                SlidePageRoute(page: fuelSheetForm(), context: context)),
           },
         ),
       ),
+    );
+  }
+
+  void _showDetailsDialog(
+    String captainBoat,
+    String captainName,
+    int noteNumber,
+    int liters,
+    String formattedDate,
+  ) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
+            title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(captainName,
+                      style: TextStyle(
+                        fontSize: 20,
+                      )),
+                  Text(captainBoat.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 15,
+                      )),
+                ]),
+            content: SingleChildScrollView(
+                child: Column(
+              children: [
+                // Text(captainBoat),
+                addItems('Note Number', noteNumber.toString()),
+                addItems('Liters', noteNumber.toString()),
+                addItems('Date', formattedDate)
+
+              ],
+            )),
+          );
+        });
+  }
+    Row addItems(
+    String title,
+    String? checklist,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title),
+        Text('${checklist}'),
+      ],
     );
   }
 }
