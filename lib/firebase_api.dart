@@ -43,7 +43,7 @@ Future<void> handleBackgroudMessage(RemoteMessage message) async {
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
-  final ApiService _apiService = ApiService();
+  // final ApiService _apiService = ApiService();
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   Future<void> initNotifications() async {
@@ -54,7 +54,7 @@ class FirebaseApi {
     final FCMToken = await _firebaseMessaging.getToken();
     print('Token: $FCMToken');
 
-    await _apiService.sendFCMtoken(FCMToken);
+    // await _apiService.sendFCMtoken(FCMToken);
 
     FirebaseMessaging.onBackgroundMessage(handleBackgroudMessage);
 

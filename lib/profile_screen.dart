@@ -1,8 +1,9 @@
-import 'dart:convert';
+
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
-import 'package:captain_app_2/components/form_cards.dart';
+
 
 import 'package:captain_app_2/providers/userprovider.dart';
 
@@ -31,6 +32,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+    final _firebaseMessaging = FirebaseMessaging.instance;
   ApiService _apiService = ApiService();
   IOWebSocketChannel? _webSocketChannel;
   Map<String, dynamic>? profileData;
@@ -40,12 +42,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isBoat = false;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+
+    
+    final FCMToken = await _firebaseMessaging.getToken();
+    await _apiService.sendFCMtoken(FCMToken);
     Provider.of<UserSocketProvider>(context, listen: false).fetchSocketData();
-    _apiService.getSocketCaptain(
-      context,
-    );
+    _apiService.getSocketCaptain(context);
   }
 
   @override
