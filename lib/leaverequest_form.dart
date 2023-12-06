@@ -41,10 +41,6 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
 
   List<DropdownMenuItem<dynamic>> _dropdownItems = [
     DropdownMenuItem(
-      value: 'n',
-      child: Text('None'),
-    ),
-    DropdownMenuItem(
       value: 'd',
       child: Text('Off Days'),
     ),
@@ -55,10 +51,6 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
     DropdownMenuItem(
       value: 'p',
       child: Text('Public Holidays'),
-    ),
-    DropdownMenuItem(
-      value: 'f',
-      child: Text('Family Obligations'),
     ),
     DropdownMenuItem(
       value: 'o',
@@ -194,10 +186,8 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
                   ],
                 ),
               ),
-              Text('CREATE'),
-              SizedBox(
-                height: 60,
-              ),
+              const Text('CREATE'),
+              const SizedBox(height: 60),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: myLeaveRequestForm(),
@@ -211,7 +201,7 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          columns: [
+                          columns: const [
                             DataColumn(
                               label: Text('Created'),
                             ),
@@ -309,6 +299,7 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
                 border: OutlineInputBorder(),
               ),
               items: _dropdownItems,
+              value: 'd',
               onChanged: (value) {
                 // Handle the selected value here
                 setState(() {
@@ -338,30 +329,11 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  width: 280,
-                  child: TextFormField(
-                    controller: _leaveStartDate,
-                    keyboardType: TextInputType.datetime,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please select a Leave Start Date";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Leave Start Date',
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
                 IconButton(
                   onPressed: () async {
                     DateTime? selectedDate = await showDatePicker(
@@ -381,7 +353,26 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
                   },
                   icon: Icon(
                     Icons.calendar_month_outlined,
-                    color: Colors.grey[800],
+                    color: Colors.deepOrangeAccent,
+                  ),
+                ),
+                SizedBox(
+                  width: 280,
+                  child: TextFormField(
+                    controller: _leaveStartDate,
+                    keyboardType: TextInputType.datetime,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please select a Leave Start Date";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Leave Start Date',
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(8),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ],
@@ -392,25 +383,6 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  width: 280,
-                  child: TextFormField(
-                    controller: _leaveEndDate,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please select a Leave End Date";
-                      }
-                      return null;
-                    },
-                    keyboardType: TextInputType.datetime,
-                    decoration: InputDecoration(
-                      labelText: 'Leave End Date',
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(8),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
                 IconButton(
                   onPressed: () async {
                     DateTime? selectedEndDate = await showDatePicker(
@@ -430,7 +402,26 @@ class _LeaveRequstFormState extends State<LeaveRequstForm> {
                   },
                   icon: Icon(
                     Icons.calendar_month_outlined,
-                    color: Colors.grey[800],
+                    color: Colors.deepOrange,
+                  ),
+                ),
+                SizedBox(
+                  width: 280,
+                  child: TextFormField(
+                    controller: _leaveEndDate,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please select a Leave End Date";
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.datetime,
+                    decoration: InputDecoration(
+                      labelText: 'Leave End Date',
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(8),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ],

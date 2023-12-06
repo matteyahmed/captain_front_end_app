@@ -383,14 +383,16 @@ class _TripSheetFormState extends State<TripSheetForm> {
                 SizedBox(
                   width: 10.0,
                 ),
-                ElevatedButton(
+                ElevatedButton.icon(
+                              label: Text('Submit'),
+                  icon: const Icon(Icons.send),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[900],
                       foregroundColor: Colors.white),
                   onPressed: () {
                     _isPressed == false ? _submitForm() : null;
                   },
-                  child: Text('Submit'),
+      
                 ),
               ],
             ),

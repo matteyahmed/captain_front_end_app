@@ -42,14 +42,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isBoat = false;
 
   @override
-  void initState() async {
+  void initState()  {
     super.initState();
+    _initializeData();
+        Provider.of<UserSocketProvider>(context, listen: false).fetchSocketData();
+    _apiService.getSocketCaptain(context);
+  }
 
-    
+  Future<void> _initializeData() async {
     final FCMToken = await _firebaseMessaging.getToken();
     await _apiService.sendFCMtoken(FCMToken);
-    Provider.of<UserSocketProvider>(context, listen: false).fetchSocketData();
-    _apiService.getSocketCaptain(context);
+
   }
 
   @override

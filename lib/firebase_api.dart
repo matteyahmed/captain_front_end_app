@@ -15,7 +15,8 @@ Future<void> handleBackgroudMessage(RemoteMessage message) async {
 
   await flutterLocalNotificationsPlugin.initialize(
     InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      // android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      android: AndroidInitializationSettings('mipmap/ic_launcher_foreground'),
     ),
   );
   final notificationTitle = message.notification?.title;
@@ -33,10 +34,11 @@ Future<void> handleBackgroudMessage(RemoteMessage message) async {
         importance: Importance.high,
         priority: Priority.high,
         showWhen: true,
-        icon: 'mipmap/ic_launcher',
+        icon: '@mipmap/ic_launcher_foreground',
         autoCancel: false,
          // Set the background color here
       ),
+      iOS: DarwinNotificationDetails()
     ),
   );
 }
@@ -51,8 +53,8 @@ class FirebaseApi {
 
     await _firebaseMessaging.requestPermission();
 
-    final FCMToken = await _firebaseMessaging.getToken();
-    print('Token: $FCMToken');
+    // final FCMToken = await _firebaseMessaging.getToken();
+    // print('Token: $FCMToken');
 
     // await _apiService.sendFCMtoken(FCMToken);
 
@@ -68,16 +70,16 @@ class FirebaseApi {
 
   Future<void> handleForegroundMessage(RemoteMessage message) async {
     // Display a notification using flutter_local_notifications
-    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+    final AndroidNotificationDetails androidPlatformChannelSpecifics = 
         AndroidNotificationDetails(
             'your_channel_id', // Replace with your channel ID
             'Default Channel',
-            importance: Importance.high,
+            importance: Importance.max,
             priority: Priority.high,
             showWhen: true,
-            icon: 'mipmap/ic_launcher',
+            icon: '@mipmap/ic_launcher_foreground',
             autoCancel: false,
-            color: Color(DateTime.april));
+    );
 
     final NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
